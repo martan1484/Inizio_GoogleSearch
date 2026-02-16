@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-const BASE_URL = "https://tvuj-projekt.onrender.com"; // uprav
+const BASE_URL = "https://inizio-googlesearch.onrender.com/";
 
 describe("Render /search endpoint", () => {
 
