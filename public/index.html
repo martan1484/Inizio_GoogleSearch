@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Google Search Export (SerpAPI)</title>
+</head>
+<body>
+
+  <h2>Google Search Export</h2>
+
+  <input type="text" id="query" placeholder="Zadejte klíčové slovo">
+  <button onclick="search()">Hledat</button>
+
+  <script>
+    async function search() {
+      const query = document.getElementById("query").value;
+
+      if (!query) {
+        alert("Zadejte vyhledávací dotaz.");
+        return;
+      }
+
+      const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
+      const data = await response.json();
+
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      const blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        { type: "application/json" }
+      );
+
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "google-results.json";
+      link.click();
+    }
+  </script>
+
+</body>
+</html>
