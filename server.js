@@ -1,11 +1,18 @@
 const express = require("express");
+const path = require("path");
 const { searchGoogle } = require("./googleService");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
+// statické soubory z public/
 app.use(express.static("public"));
 
+// root route → index.html
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// endpoint pro hledání
 app.get("/search", async (req, res) => {
   const query = req.query.q;
 
@@ -28,6 +35,15 @@ app.get("/search", async (req, res) => {
   }
 });
 
+// port z Renderu
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
