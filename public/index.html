@@ -1,44 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="cs">
 <head>
   <meta charset="UTF-8">
-  <title>Google Search Export (SerpAPI)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Search JSON</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    input, button { padding: 8px; margin: 4px 0; }
+    pre { background: #f0f0f0; padding: 10px; max-height: 400px; overflow: auto; }
+  </style>
 </head>
 <body>
+  <h1>Vyhledávání přes SerpAPI</h1>
 
-  <h2>Google Search Export</h2>
+  <input type="text" id="query" placeholder="Zadej dotaz" />
+  <button id="searchBtn">Hledat</button>
 
-  <input type="text" id="query" placeholder="Zadejte klíčové slovo">
-  <button onclick="search()">Hledat</button>
+  <div id="downloadContainer" style="margin-top: 20px; display: none;">
+    <button id="downloadBtn">Stáhnout JSON s výsledky hledání</button>
+  </div>
+
+  <h2>Výsledky:</h2>
+  <pre id="results">Zatím žádné výsledky</pre>
 
   <script>
-    async function search() {
-      const query = document.getElementById("query").value;
+    const searchBtn = document.getElementById("searchBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const resultsEl = document.getElementById("results");
+    const downloadContainer = document.getElementById("downloadContainer");
+    let lastData = null;
 
-      if (!query) {
-        alert("Zadejte vyhledávací dotaz.");
-        return;
+    searchBtn.addEventListener("click", async () => {
+      const query = document.getElementById("query").value.trim();
+      if (!query) return alert("Zadej dotaz");
+
+      resultsEl.textContent = "Načítám…";
+      downloadContainer.style.display = "none";
+
+      try {
+        const res = await fetch(`/search?q=${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error(`Chyba ${res.status}`);
+        const data = await res.json();
+        lastData = data;
+
+        resultsEl.textContent = JSON.stringify(data, null, 2);
+        downloadContainer.style.display = "block";
+
+      } catch (err) {
+        resultsEl.textContent = `Chyba: ${err.message}`;
       }
+    });
 
-      const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
-      const data = await response.json();
-
-      if (data.error) {
-        alert(data.error);
-        return;
-      }
-
-      const blob = new Blob(
-        [JSON.stringify(data, null, 2)],
-        { type: "application/json" }
-      );
-
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "google-results.json";
-      link.click();
-    }
+    downloadBtn.addEventListener("click", () => {
+      if (!lastData) return;
+      const blob = new Blob([JSON.stringify(lastData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `search_results_${lastData.query}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
   </script>
-
 </body>
 </html>
+
+
