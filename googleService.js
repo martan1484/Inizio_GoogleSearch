@@ -1,23 +1,19 @@
 const axios = require("axios");
 
+const SERPAPI_KEY = process.env.SERPAPI_KEY;
+
 async function searchGoogle(query) {
-  const response = await axios.get("https://serpapi.com/search.json", {
-    params: {
-      engine: "google",
-      q: query,
-      api_key: process.env.SERPAPI_KEY,
-      num: 10
-    }
-  });
+  const url = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(query)}&api_key=${SERPAPI_KEY}`;
 
-  const organic = response.data.organic_results || [];
-
-  return organic.slice(0, 10).map(result => ({
-    position: result.position,
-    title: result.title,
-    url: result.link,
-    snippet: result.snippet
+  const res = await axios.get(url);
+  // mapujeme jen to, co chceme vrátit
+  const results = (res.data.organic_results || []).map((r, i) => ({
+    position: i + 1,
+    title: r.title,
+    url: r.link,
+    snippet: r.snippet || ""
   }));
+  return results;
 }
 
 module.exports = { searchGoogle };
