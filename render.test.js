@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 
-const BASE_URL = "https://inizio-googlesearch.onrender.com/";
+const BASE_URL = "https://inizio-googlesearch.onrender.com"; // nahraď svou URL
 
 describe("Render /search endpoint", () => {
 
@@ -30,11 +30,9 @@ describe("Render /search endpoint", () => {
   test("each result should contain title and link", async () => {
     const res = await fetch(`${BASE_URL}/search?q=test`);
     const data = await res.json();
-
     if (data.results.length > 0) {
-      const first = data.results[0];
-      expect(first).toHaveProperty("title");
-      expect(first).toHaveProperty("link");
+      expect(data.results[0]).toHaveProperty("title");
+      expect(data.results[0]).toHaveProperty("url");
     }
   });
 
@@ -44,3 +42,4 @@ describe("Render /search endpoint", () => {
   });
 
 });
+
