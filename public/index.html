@@ -43,7 +43,14 @@
         const data = await res.json();
         lastData = data;
 
-        resultsEl.textContent = JSON.stringify(data, null, 2);
+        resultsEl.innerHTML = data.results.map((item, index) => `
+          <div style="margin-bottom:15px;">
+            <strong>${index + 1}.</strong>
+            <a href="${item.url}" target="_blank">${item.title}</a>
+            <br/>
+            <small>${item.snippet || ""}</small>
+          </div>
+        `).join("");
         downloadContainer.style.display = "block";
 
       } catch (err) {
@@ -64,6 +71,7 @@
   </script>
 </body>
 </html>
+
 
 
 
