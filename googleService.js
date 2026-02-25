@@ -8,7 +8,7 @@ async function searchGoogle(query) {
   const res = await axios.get(url);
   // mapujeme jen to, co chceme vrátit
   const results = (res.data.organic_results || []).map((r, i) => ({
-    position: i + 1,
+    position: i,
     title: r.title,
     url: r.link,
     snippet: r.snippet || ""
@@ -17,3 +17,4 @@ async function searchGoogle(query) {
 }
 
 module.exports = { searchGoogle };
+
