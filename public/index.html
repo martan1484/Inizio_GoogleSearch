@@ -8,6 +8,7 @@
     body { font-family: sans-serif; padding: 20px; }
     input, button { padding: 8px; margin: 4px 0; }
     pre { background: #f0f0f0; padding: 10px; max-height: 400px; overflow: auto; }
+    .snippet { margin-left: 20px; display: block; color: #555; }
   </style>
 </head>
 <body>
@@ -47,7 +48,7 @@
           <div style="margin-bottom:15px;">
             <strong>${index + 1}.</strong>
             <a href="${item.url}" target="_blank">${item.title}</a></br>
-            <small>${item.snippet || ""}</small>
+            <small class="snippet">${item.snippet || ""}</small>
           </div>
         `).join("");
         downloadContainer.style.display = "block";
@@ -70,6 +71,7 @@
   </script>
 </body>
 </html>
+
 
 
 
